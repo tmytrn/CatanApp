@@ -1,0 +1,49 @@
+doctype html
+head
+  title= 'Catan | Lobby'
+  link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css', integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4', crossorigin='anonymous')
+  link(rel='stylesheet', href='/stylesheets/style.css')
+  script(src='/socket.io/socket.io.js')
+  script(src='https://code.jquery.com/jquery-1.11.1.js')
+body
+    .main.container.lobby
+        .row
+            .col
+                .row-3
+                    h2 Create Game
+                    form#createGame(method='POST', action='/game')
+                        .form-group
+                            label(for='lobbyName') Game Name
+                            input#lobbyName.form-control(type='text', placeholder='Lobby', name='lobby',required)
+                            br
+                            label(for='numplayers') Number of Players
+                            select.form-control(name="playerLimit")
+                                option(value=2) 2
+                                option(value=3) 3
+                                option(value=4) 4
+                        input.front.btn.btn-primary(type='submit', value='Create Game')
+                        //- button.front.btn.btn-primary(type='button') Create Game
+
+                .row-7
+                    form.join(method = 'post', action='/game/join')
+                      br
+                      h2 Join Game
+                      each game in games
+                        .joinableGame(data=game.id)
+                          .row
+                            .col.gameName=game.game_name
+                            .col.players=game.player_count+'/'+game.player_limit
+                      input.front.btn.btn-primary(type='submit', value='Join Game')
+
+
+            .col
+                .text
+                    ul#messages
+                    form.chat(action='/chat/lobby', method='post')
+                        br
+                        input#m.form-control(autocomplete='off', placeholder='Enter your message')
+                        .send
+                            input.btn.float-right.btn-info(type='submit', value='send')
+                            input#user(type="hidden", name="postid", value=user)
+
+    script(src='/scripts/lobby.js')

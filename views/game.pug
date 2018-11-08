@@ -1,0 +1,124 @@
+doctype html
+head
+  title= 'Catan | Game'
+  link(rel='icon' type='image/png' href='/images/icon.png')
+  link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css', integrity='sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4', crossorigin='anonymous')
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+  script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js", integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm", crossorigin="anonymous")
+  script(src='/socket.io/socket.io.js')
+  link(rel='stylesheet', href='/stylesheets/game.css')
+  script(type='text/javascript', src='/scripts/d6.js')
+body
+  input#gameId(type='hidden', value=game.id)
+
+  .row.justify-content-between
+    .col.col-2
+      .row-5
+        ul#messages
+        form.message(method='post' action=`/chat/game`)
+          input#m.form-control(autocomplete='off', placeholder='Enter your message')
+          input#user(type="hidden", name="postid", value=username)
+      .row-5.actions
+        ul#myTab.nav.nav-tabs(role='tablist')
+          li.nav-item
+            a#build-tab.nav-link.active(data-toggle='tab', href='#build', role='tab', aria-controls='build', aria-selected='true') Build
+          li.nav-item
+            a#trade-tab.nav-link(data-toggle='tab', href='#trade', role='tab', aria-controls='trade', aria-selected='false') Trade
+        #myTabContent.tab-content
+          #build.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='build-tab')
+            button.buildroad.btn.btn-primary.buildbtn Build Road
+            each val in ["wood", "brick"]
+              img(src='/images/resources/' + val + '.png')
+
+            button.buildsettlement.btn.btn-primary.buildbtn Build Settlement
+            each val in ["wood", "brick", "sheep", "wheat"]
+              img(src='/images/resources/' + val + '.png')
+
+            button.buildcity.btn.btn-primary.buildbtn Build City
+            each val in ["wheat", "wheat", "ore", "ore", "ore"]
+              img(src='/images/resources/' + val + '.png')
+
+            button.buildcard.btn.btn-primary.buildbtn Build Development Card
+            each val in ["sheep", "wheat",  "ore"]
+              img(src='/images/resources/' + val + '.png')
+
+          #trade.tab-pane.fade.show(role='tabpanel', aria-labelledby='trade-tab')
+            ul#tradeTab.nav.nav-tabs(role='tablist')
+              li.nav-item
+                a#build-tab.nav-link.active(data-toggle='tab', href='#interplayer', role='tab', aria-controls='interplayer', aria-selected='true') InterPlayer
+              li.nav-item
+                a#build-tab.nav-link(data-toggle='tab', href='#bank', role='tab', aria-controls='bank', aria-selected='true') Bank
+            #tradeTabContent.tab-content
+              #interplayer.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='interplayer-tab')
+                p Offering
+                each val in  ["wood", "brick", "sheep", "wheat", "ore"]
+                  input(id=val, class="offerplayer", type ="image" ,src="/images/resources/" + val +".png")
+                p Recieving
+                each val in ["wood", "brick", "sheep", "wheat", "ore"]
+                  input(id=val, class="recieveplayer", type ="image" ,src="/images/resources/" + val +".png")
+                button.btn.btn-primary.buildbtn Trade
+              #bank.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='bank-tab')
+                p Offering
+                each val in ["wood", "brick", "sheep", "wheat", "ore"]
+                  input(id=val, class="offerbank", type ="image" ,src="/images/resources/" + val +".png")
+                p Recieving
+                each val in  ["wood", "brick", "sheep", "wheat", "ore"]
+                  input(id=val, class="recievebank", type ="image" ,src="/images/resources/" + val +".png")
+                button.btn.btn-primary.buildbtn Trade
+    .col.col-8
+      .d-flex.flex-column
+        .board
+          #gbord
+            img.ocean(src='/images/tiles/ocean.png')
+            #display
+              each tile, index in tiles
+                span.tile(data-tile-id= index, data-prob=tile.die_number, data-type=tile.resource_type, data-robber=tile.robber)
+                span.robber(data-tile_order=index, data-robber=tile.robber)
+              each vertex in vertices
+                span.vertex(data-x=vertex.x, data-y=vertex.y, data-owner= vertex.user_id data-item=vertex.item)
+              .roads
+                each edge in edges
+                  span.edge(data-x_start=edge.x_start, data-y_start=edge.y_start, data-x_end=edge.x_end, data-y_end=edge.y_end, data-owner=edge.user_id, data-item=edge.road )
+
+    .col.col-2#game_info
+      .row-sm-3
+        each player in playerInfo
+          .row.playercards(turn= player.current_turn)
+            h3= player.username
+            .playerStats#stats
+              img(src='/images/cards.png')
+              h6= player.resource_count
+              img(src='/images/devcards.png')
+              h6= player.card_count
+              h6 Victory Points:
+              h6=player.victoryPoint
+
+      .row-sm-3.cards
+        h5 Resources
+        each val in ["brick", "wood",  "ore","wheat", "sheep" ]
+            .resource
+              img(src='/images/resources/' + val + '.png')
+        .count#count
+          each resource in playerResources
+            p= resource.count
+
+        h5 Development Cards
+        each val in ["knight",  "monopoly", "plenty",  "roadbuilding", "victorypoint" ]
+          .resource
+            img(src='/images/devcards/' + val + '.png')
+      .row-sm-3
+        input#roll(type='button', value='Roll Dice', style='display: none')
+        input#end(type='button', value='End Turn')
+        input#diceVal(type="hidden", value=dice)
+    #Modal.modal.fade(role='dialog')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title Game Event
+            button.close(type='button', data-dismiss='modal', onclick='stopModal()') ×
+          .modal-body
+            p Catan messages goes here...
+          .modal-footer
+            button.btn.btn-default(type='button', data-dismiss='modal', onclick='stopModal()') Close
+
+  script(src="/scripts/game.js")

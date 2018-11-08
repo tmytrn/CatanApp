@@ -1,0 +1,119 @@
+@font-face{
+  font-family:Nova;
+  src: url(/fonts/nova.ttf);
+}
+body {
+  padding: 50px;
+  margin: auto;
+  font-family:Nova;
+  background: url(/images/background.jpg) no-repeat center center fixed;
+  background-size: cover;
+  background-color: #c64947;
+}
+.title{
+  text-align:center;
+  padding-bottom: 50px;
+  padding-top: 20px;
+}
+.reg_title{
+  text-align:center;
+  padding-top: 50px;
+}
+.row{
+  background-color:#fff;
+  padding-top: 10px;
+  margin:10px;
+}
+.btn.btn-primary{
+  margin-top:5px;
+  margin-bottom:10px;
+}
+.btn.btn-primary.reg_btn{
+  margin-bottom:20px;
+  margin-top:20px;
+}
+.btn.front{
+  width:100%;
+}
+.btn.turn{
+padding:5%;
+}
+.container{
+ border-radius:10px;
+ align-self: center;
+ background-color: #fff;
+}
+a {
+  color: #00B7FF;
+}
+.auth{
+  width:35%;
+}
+.form{
+  padding-top: 5%;
+  margin-top:10%;
+}
+/*****************************
+
+Login
+
+*******************************/
+.logspace{
+  margin-top:5%;
+  padding-bottom:1px;
+}
+/******************************
+
+    Lobby
+
+*******************************/
+.lobby{
+  width:75%;
+}
+.row{
+  width:100%;
+}
+.send{
+  padding-top: 3%;
+  padding-bottom:5%;
+}
+.text{
+  margin-top: 3%;
+  margin-bottom:3%;
+  padding-bottom:3%;
+  border-bottom:3%;
+}
+#messages {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  height: 500px;
+  background: white;
+  overflow: auto;
+  border-radius: 15px;
+  border: #368BC1 5px solid;
+  }
+  #messages li {
+  padding: 5px 10px;
+  }
+  #messages li:nth-child(odd) {
+  background: #eee;
+  }
+
+div.joinableGame {
+  border-bottom: solid black 2px;
+}
+
+div.joinableGame > .row > .players {
+  text-align:right;
+}
+
+div.joinableGame:hover {
+  border-bottom: solid blue 2px;
+  color: blue;
+}
+
+div.joinableGame.selected{
+  color:blue;
+  border-left: solid blue 5px;
+}
